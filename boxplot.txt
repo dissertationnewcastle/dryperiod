@@ -1,0 +1,39 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Merge 10 files
+file_paths1 = [
+    "2030 19981.xlsx","2030 19991.xlsx", "2030 20001.xlsx", "2030 20021.xlsx", "2030 20031.xlsx", "2030 20041.xlsx","2030 20051.xlsx","2030 20061.xlsx", "2030 20071.xlsx"
+]
+
+# create empty list
+df_list = []
+
+# Read data from each file and append it to the list
+for file_path in file_paths1:
+    df = pd.read_excel(file_path)
+    df_list.append(df)
+
+# Concatenate the DataFrames to single DataFrame
+combined_df = pd.concat(df_list, ignore_index=True)
+
+# Read data from the single file
+df_single = pd.read_excel("2021 data1.xlsx")
+
+log_flow_rate_combined = np.log(combined_df['Data'])
+log_flow_rate_single = np.log(df_single['Data'])
+
+# Combine the data into a single DataFrame for box plotting
+data = pd.DataFrame({
+    '2030 Epochs': log_flow_rate_combined,
+    '2021': log_flow_rate_single
+})
+
+# Create a box plot using seaborn
+plt.figure(figsize=(8, 6))
+sns.boxplot(data=data)
+plt.xlabel('Data Source')
+plt.ylabel('Log-Transformed Flow Rate')
+plt.show()

@@ -1,0 +1,75 @@
+import pandas as pd
+from statistics import median, mean, mode
+
+def dry__periods(file_path, thresholds):
+    df1 = pd.read_excel('2030 2007.xlsx')
+    df1['Time'] = pd.to_datetime(df1['Time'], format="%d/%m/%Y hh:mm")
+    df1['Date'] = df1['Time'].dt.strftime("%d/%m/%Y hh:mm")
+
+    daily_max = df1.groupby('Date')['Data'].max()
+    dry_periods = []
+
+    for date, value in daily_max.items():
+        if value < thresholds:
+            dry_periods.append(date)
+
+    dry_periods.sort(key=lambda x: pd.to_datetime(x, format="%d/%m/%Y hh:mm"))
+
+    return dry_periods
+
+def group_continuous_dates(dates):
+    grouped_dates = []
+    current_group = []
+
+    for date in dates:
+        if not current_group:
+            current_group.append(date)
+        else:
+            prev_date = pd.to_datetime(current_group[-1], format="%d/%m/%Y hh:mm")
+            curr_date = pd.to_datetime(date, format="%d/%m/%Y hh:mm")
+            if (curr_date - prev_date).days == 1:
+                current_group.append(date)
+            else:
+                grouped_dates.append(current_group)
+                current_group = [date]
+
+    if current_group:
+        grouped_dates.append(current_group)
+
+    return grouped_dates
+
+def calculate_duration(grouped_dates):
+    durations = []
+
+    for group in grouped_dates:
+        start_date = pd.to_datetime(group[0], format="%d/%m/%Y hh:mm")
+        end_date = pd.to_datetime(group[-1], format="%d/%m/%Y hh:mm")
+        duration = (end_date - start_date).days + 1
+        durations.append(duration)
+
+    return durations
+
+file_path = '2030 2007.xlsx'
+threshold_value = 5.7
+
+dry_periods = dry__periods(file_path, threshold_value)
+dry_periods.sort(key=lambda x: pd.to_datetime(x, format="%d/%m/%Y hh:mm"))
+
+grouped_dates = group_continuous_dates(dry_periods)
+durations = calculate_duration(grouped_dates)
+
+print("Grouped Dry periods with duration statistics:")
+for i, group in enumerate(grouped_dates):
+    start_date = group[0]
+    end_date = group[-1]
+    duration = durations[i]
+    print(f"Start date: {start_date} | End date: {end_date} | Duration: {duration} days")
+
+    duration_med = median(durations)
+    duration_mn = mean(durations)
+    duration_md = mode(durations)
+    duration_max = max(durations)
+    duration_min = min(durations)
+
+    print(f" Median={duration_median}, Mean={duration_mean}, Mode={duration_mode}, Max={duration_max}, Min={duration_min}")
+    print()

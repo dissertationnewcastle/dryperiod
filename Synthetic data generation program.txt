@@ -1,0 +1,120 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import lognorm
+
+df= pd.read_excel('2021 data.xlsx')
+df1= df['Data']
+df2=np.log(df1)
+
+mean1=df1.mean()
+std1=df1.std()
+print(mean1)
+print(std1)
+min1=np.min(df1)
+lgmin1=np.log(min1)
+max1=np.max(df1)
+lgmax1=np.log(max1)
+print(min1, max1)
+print(lgmin1, lgmax1)
+print(df2)
+m1=np.log(mean1)
+s1=np.log(std1)
+cov1=s1/m1
+print(m1,s1,cov1)
+m2=np.log(2373.72)
+print(m2)
+permin=lgmin1/m1
+permax=lgmax1/m1
+print(permin,permax)
+lgs2= cov1*m2
+print(lgs2)
+lgmin2=m2*permin
+lgmax2=m2*permax
+print(lgmin2, lgmax2)
+
+
+import matplotlib.pyplot as plt
+
+# Parameters (mean and coefficient of variation)
+mean = 2373.72
+cov = 0.92
+
+# Calculate log mean and log standard deviation
+log_mean = np.log(mean) - 0.5 * np.log(1 + (cov ** 2))
+log_std_dev = np.sqrt(np.log(1 + (cov ** 2)))
+
+# Generate the lognormal distribution values
+np.random.seed(0)
+data = np.random.lognormal(mean=log_mean, sigma=log_std_dev, size=365)
+
+# Plot the histogram with the lognormal distribution curve
+plt.hist(data, bins=20, density=True, alpha=0.7, label='Histogram')
+
+# Generate a range of values for the x-axis
+x = np.linspace(min(data), max(data), 100)
+
+# Calculate the lognormal distribution values
+y = (1 / (x * log_std_dev * np.sqrt(2 * np.pi))) * np.exp(-(np.log(x) - log_mean) ** 2 / (2 * log_std_dev ** 2))
+
+# Plot the lognormal distribution curve
+plt.plot(x, y, color='red', label='Lognormal Distribution')
+
+plt.xlabel('Flow rate')
+plt.ylabel('Probability Density')
+plt.legend()
+
+# Show the plot
+plt.show()
+
+#Randomise 30 day data
+
+np.random.seed(0)
+
+# Generate the lognormal distribution data points
+data = np.random.lognormal(mean=log_mean, sigma=log_std_dev, size=365)
+
+# Print the generated data points
+print(data)
+
+
+
+np.random.seed(0)
+
+# Generate random values from the lognormal distribution
+random_30 = np.random.lognormal(mean=log_mean, sigma=log_std_dev, size=30)
+
+# Print 30 random values
+print(random_30)
+
+import pandas as pd
+import random
+# Random values for COD between 200 to 510 for 30 days
+random_COD = [random.randint(200, 510) for _ in range(30)]
+print(random_COD)
+
+flow_30=pd.DataFrame(random_30, columns=['flow m3/day'])
+flowdata30['COD']= random_COD
+flow_30.to_excel("30Random.xlsx")
+
+#Randomise 60 day data
+np.random.seed(0)
+
+# Generate random values from the lognormal distribution
+random_60 = np.random.lognormal(mean=log_mean, sigma=log_std_dev, size=30)
+
+# Print 30 random values
+print(random_60)
+
+import pandas as pd
+import random
+# Random values for COD between 200 to 510 for 60 days
+random_COD1 = [random.randint(200, 510) for _ in range(60)]
+print(random_COD1)
+
+flow_60=pd.DataFrame(random_60, columns=['flow m3/day'])
+flowdata60['COD']= random_COD1
+flow_60.to_excel("60Random.xlsx")
+
+
+

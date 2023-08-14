@@ -1,0 +1,36 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read Excel file
+data_frame = pd.read_excel('2030 20051.xlsx')
+data_frame['DateTime'] = pd.to_datetime(data_frame['Time'])
+
+# Extract the date from the DateTime column
+data_frame['Date'] = data_frame['DateTime'].dt.date
+
+# Calculate daily average 
+daily_average1 = data_frame.groupby('Date')['Data'].mean()
+print(daily_average1)
+daily_average_sorted = daily_average1.sort_values(ascending=False)
+
+
+# Print the daily average data in descending order
+print(daily_average_sorted)
+daily_average_sorted = daily_average_sorted.reset_index()
+daily_average_sorted['rank'] = range(1, len(daily_average_sorted) + 1)
+print(daily_average_sorted)
+daily_average_sorted['Exceedance(%)'] = daily_average_sorted['rank'] * 100 / 365
+
+
+# Plot the graph
+plt.plot(daily_average_sorted['Exceedance(%)'], daily_average_sorted[('Data')])
+
+# Set labels and title
+plt.xlabel('Percentage of Exceedance')
+plt.ylabel('Flow Rate')
+plt.title('Flow Rate vs. Percentage of Exceedance')
+
+# Show the plot
+plt.show()
+daily_average_overall = daily_average.mean()
+print(daily_average_overall)

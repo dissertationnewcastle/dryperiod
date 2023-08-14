@@ -1,0 +1,26 @@
+import random
+import pandas as pd
+# Random values between 600 to 7000 for 7 days
+random_set_1 = [random.randint(600, 7000) for _ in range(6)]
+
+# Random values between 150 to 500 for 23 days
+random_set_2 = [random.randint(150, 500) for _ in range(23)]
+
+# Random values between 600 to 7000 for 4 days
+random_set_3 = [random.randint(600, 7000) for _ in range(4)]
+
+dry23 = random_values_1 + random_values_2+ random_values_3
+
+print (dry23)
+
+# Random values for COD between 200 to 510 for 35 days
+random_COD = [random.randint(200, 510) for _ in range(35)]
+print(random_COD)
+
+flowdata23=pd.DataFrame(dry23,columns=['flow m3/day'])
+flowdata23['COD']= random_COD
+flowdata23.to_excel("new30dryperiod.xlsx")
+
+
+
+
